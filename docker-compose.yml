@@ -1,0 +1,55 @@
+version: "3"
+services:
+  # front:
+  #   image: node:16
+  #   volumes:
+  #     - ./front:/usr/src
+  #     - front_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
+  #   working_dir: "/usr/src"
+  #   command: sh -c "yarn && yarn start"
+  #   ports:
+  #     - "80:3000"
+  #   environment:
+  #     REACT_APP_SERVER_URL: "http://localhost:3000"
+  #     CHOKIDAR_USEPOLLING: true
+  api:
+    image: node:16
+    volumes:
+      - ./api/:/usr/src/
+      - api_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
+    working_dir: "/usr/src"
+    ports:
+      - "3000:3000"
+    command: sh -c "yarn && yarn dev"
+    depends_on:
+      - db
+    environment:
+      CLIENT_ORIGIN_URL: "http://localhost"
+      DB_HOST: "db"
+      DB_USERNAME: "root"
+      DB_PASSWORD: "docker"
+  db:
+    image: mysql:8
+    container_name: db-container
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./db/data:/var/lib/mysql #データ永続化
+      - ./db/sql:/docker-entrypoint-initdb.d #起動時sqlフォルダ内のsqlファイルを実行
+  phpmyadmin:
+    image: phpmyadmin #fpmやalpineタグは別途httpサーバが必要
+    container_name: phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - 8080:80
+    volumes:
+      - "./phpmyadmin:/sessions"
+    depends_on:
+      - db
+volumes:
+  # front_modules:
+  api_modules:
