@@ -1,16 +1,20 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import User from './User';
 @Entity()
 export default class Article {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column()
   title?: string;
 
   @Column()
-  content: string;
+  content?: string;
 
   @ManyToOne(() => User, (user) => user.articles)
-  user: User
+  author?: User;
+
+  constructor(id: number) {
+    this.id = id;
+  }
 }

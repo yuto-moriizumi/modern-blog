@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import Article from './Article';
 
 @Entity()
@@ -11,5 +11,9 @@ export default class User {
   name?: string;
 
   @OneToMany(() => Article, (article) => article.author)
-  articles: Article[]
+  articles?: Article[];
+
+  constructor(id: number) {
+    this.id = id;
+  }
 }

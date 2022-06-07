@@ -5,12 +5,11 @@ import compression from 'compression';
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import createError from 'http-errors';
-import router from './route/router';
+import usersRouter from './route/usersRouter';
 import cors from 'cors';
 import 'reflect-metadata';
 import User from './model/User';
 import Article from './model/Article';
-import departmentsRouter from './route/departments';
 
 // envファイルの読み込み
 dotenv.config();
@@ -26,8 +25,12 @@ app.use(Express.urlencoded({ extended: true }));
 app.use(compression()); // gzip圧縮して返す
 
 // apiルータへ
-app.use('/', router);
-app.use('/', departmentsRouter);
+app.use('/', usersRouter);
+
+// Root Endpoint
+usersRouter.get('/', (req, res) => {
+  res.status(200).send('Welcome to SSW HR System API server!');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)));
@@ -49,7 +52,7 @@ export const dataSource = new DataSource({
   port: 3306,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: 'ssw_hr',
+  database: 'modern_blog',
   entities: [User, Article],
   synchronize: true,
   logging: false,

@@ -4,22 +4,17 @@ import { UserDto } from '../dto/UserDto';
 import Article from '../model/Article';
 import User from '../model/User';
 
-const router = express.Router();
+const usersRouter = express.Router();
 
-// Root Endpoint
-router.get('/', (req, res) => {
-  res.status(200).send('Welcome to SSW HR System API server!');
-});
-
-router.get('/users', async (req, res) => {
+usersRouter.get('/users', async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   res.status(200).send(await dataSource.manager.find(User));
 });
 
-router.get('/users/:id', async (req, res) => {
+usersRouter.get('/users/:id', async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   const user = await dataSource.manager.findOneBy(User, {
-    id: req.params.id,
+    id: parseInt(req.params.id),
   });
   if (user == null) {
     res.status(404).send({ code: 404, message: 'User not found' });
@@ -28,7 +23,7 @@ router.get('/users/:id', async (req, res) => {
   res.status(200).send(user);
 });
 
-router.post('/users', async (req, res) => {
+usersRouter.post('/users', async (req, res) => {
   try {
     if (!dataSource.isInitialized) await dataSource.initialize();
     res
@@ -36,7 +31,7 @@ router.post('/users', async (req, res) => {
       .send(
         await dataSource.manager.save(
           User,
-          userMap(req.body, new User(req.body.id))
+          userMap(req.body, new User(parseInt(req.body.id)))
         )
       );
   } catch (error) {
@@ -45,29 +40,22 @@ router.post('/users', async (req, res) => {
   }
 });
 
-router.patch('/users/:id', async (req, res) => {
+usersRouter.patch('/users/:id', async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   res
     .status(200)
     .send(
       await dataSource.manager.save(
         User,
-        userMap(req.body, new User(req.params.id))
+        userMap(req.body, new User(parseInt(req.params.id)))
       )
     );
 });
 
 function userMap(req: UserDto, user: User) {
   //idはマッピング対象外
-  user.displayName = req.username;
-  user.username = req.displayName;
-  user.joined_at = req.joined_at;
-  user.left_at = req.left_at;
-  user.comment = req.comment;
-  user.check1 = req.check1;
-  if (req.departments)
-    user.departments = req.departments.map((d) => new Article(d));
+  user.name = req.name;
   return user;
 }
 
-export default router;
+export default usersRouter;
