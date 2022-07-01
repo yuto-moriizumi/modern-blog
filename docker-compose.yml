@@ -6,12 +6,12 @@ services:
       - ./front:/usr/src
       - front_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
-    # command: sh -c "yarn && yarn start"
+    command: sh -c "yarn && yarn dev"
     tty: true
     ports:
-      - "80:3000"
+      - "3000:3000"
     environment:
-      REACT_APP_SERVER_URL: "http://localhost:3000"
+      REACT_APP_SERVER_URL: "http://localhost:4000"
       # CHOKIDAR_USEPOLLING: true
   api:
     image: node:16
@@ -20,12 +20,12 @@ services:
       - api_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
     ports:
-      - "3000:3000"
+      - "4000:4000"
     command: sh -c "yarn && yarn dev"
     depends_on:
       - db
     environment:
-      CLIENT_ORIGIN_URL: "http://localhost"
+      CLIENT_ORIGIN_URL: "http://localhost:3000"
       DB_HOST: "db"
       DB_USERNAME: "root"
       DB_PASSWORD: "docker"
