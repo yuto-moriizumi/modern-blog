@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import createError from 'http-errors';
 import usersRouter from './route/usersRouter';
+import articlesRouter from './route/articlesRouter';
 import cors from 'cors';
 import 'reflect-metadata';
 import User from './model/User';
@@ -26,10 +27,11 @@ app.use(compression()); // gzip圧縮して返す
 
 // apiルータへ
 app.use('/', usersRouter);
+app.use('/', articlesRouter);
 
 // Root Endpoint
-usersRouter.get('/', (req, res) => {
-  res.status(200).send('Welcome to SSW HR System API server!');
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to Modern blog Express API Server!');
 });
 
 // catch 404 and forward to error handler
@@ -58,15 +60,7 @@ export const dataSource = new DataSource({
   logging: false,
 });
 
-// to initialize initial connection with the database, register all entities
-// and "synchronize" database schema, call "initialize()" method of a newly created database
-// once in your application bootstrap
-dataSource
-  .initialize()
-  .then(() => {
-    // here you can start to work with your database
-  })
-  .catch((error) => console.log(error));
+dataSource.initialize().catch((error) => console.log(error));
 
 module.exports = app;
 export default app;

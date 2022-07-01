@@ -11,8 +11,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      REACT_APP_SERVER_URL: "http://localhost:4000"
-      # CHOKIDAR_USEPOLLING: true
+      API_URL_SSR: "http://api:3000"
+      API_URL_CSR: "http://localhost:4000"
+      CHOKIDAR_USEPOLLING: true
   api:
     image: node:16
     volumes:
@@ -20,7 +21,7 @@ services:
       - api_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
     ports:
-      - "4000:4000"
+      - "4000:3000"
     command: sh -c "yarn && yarn dev"
     depends_on:
       - db
