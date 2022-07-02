@@ -20,8 +20,7 @@ const LoginPage: NextPage = () => {
   ) => {
     e.preventDefault();
     await dispatch(loginAsync(id));
-    console.log(user);
-    if (user.status === "failed") {
+    if (user.user === undefined || user.status === "failed") {
       setError("ログインに失敗しました");
       return;
     }

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { AppState } from "../../app/store";
-import { User } from "../../pages/articles/";
+import { User } from "../../types";
 
 export interface UserState {
   user: User | undefined;

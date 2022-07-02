@@ -5,7 +5,10 @@ import userReducer from "../features/counter/userSlice";
 
 export function makeStore() {
   return configureStore({
-    reducer: { counter: counterReducer, user: userReducer },
+    reducer: {
+      counter: counterReducer,
+      user: userReducer,
+    },
   });
 }
 

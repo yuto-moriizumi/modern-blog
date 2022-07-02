@@ -28,7 +28,7 @@ const CreatePage: NextPage = () => {
       content,
       authorId: userStore.user.id,
     });
-    router.push("./list");
+    router.push("/");
   };
 
   if (userStore.user === undefined) return <h1>Loading...</h1>;
