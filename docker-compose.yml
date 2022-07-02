@@ -11,8 +11,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      API_URL_SSR: "http://api:3000"
-      API_URL_CSR: "http://localhost:4000"
+      API_URL_SSR: "http://api:4000"
+      NEXT_PUBLIC_API_URL: "http://localhost:4000"
       CHOKIDAR_USEPOLLING: true
   api:
     image: node:16
@@ -21,7 +21,7 @@ services:
       - api_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
     ports:
-      - "4000:3000"
+      - "4000:4000"
     command: sh -c "yarn && yarn dev"
     depends_on:
       - db
@@ -32,7 +32,6 @@ services:
       DB_PASSWORD: "docker"
   db:
     image: mysql:8
-    container_name: db-container
     ports:
       - "3306:3306"
     environment:
@@ -43,7 +42,6 @@ services:
       - ./db/sql:/docker-entrypoint-initdb.d #起動時sqlフォルダ内のsqlファイルを実行
   phpmyadmin:
     image: phpmyadmin #fpmやalpineタグは別途httpサーバが必要
-    container_name: phpmyadmin
     environment:
       - PMA_ARBITRARY=1
     ports:

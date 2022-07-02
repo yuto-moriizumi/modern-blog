@@ -1,14 +1,15 @@
 import axios from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { User } from "../list";
+import Link from "next/link";
+import { User } from "../types";
 
 type Props = {
   users: User[];
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const users: User[] = (await axios.get(process.env.API_URL_SSR + "/articles"))
+  const users: User[] = (await axios.get(process.env.API_URL_SSR + "/users"))
     .data;
   const props: Props = { users };
   return {
@@ -23,10 +24,12 @@ const ListPage: NextPage<Props> = (props: Props) => {
         <title>Users</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Link href="users/create">新規作成</Link>
       <ul>
-        <li>test</li>
         {props.users.map((user) => (
-          <li>{user.name}</li>
+          <li>
+            {user.id}: {user.name}
+          </li>
         ))}
       </ul>
     </>

@@ -31,7 +31,7 @@ articlesRouter.post('/articles', async (req, res) => {
       .send(
         await dataSource.manager.save(
           Article,
-          articleMap(req.body, new Article(parseInt(req.body.id)))
+          articleMap(req.body, new Article())
         )
       );
   } catch (error) {
@@ -55,7 +55,7 @@ articlesRouter.patch('/articles/:id', async (req, res) => {
 function articleMap(req: ArticleDto, article: Article) {
   //idはマッピング対象外
   article.title = req.title;
-  article.content = req.title;
+  article.content = req.content;
   article.author = new User(req.authorId);
   return article;
 }

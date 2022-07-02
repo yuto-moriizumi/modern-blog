@@ -8,8 +8,11 @@ const ListPage: NextPage = () => {
   const [name, setName] = useState("");
   const router = useRouter();
 
-  const handleClick = async () => {
-    await axios.post(process.env.API_URL_CSR + "/users", { name });
+  const handleClick = async (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    await axios.post(process.env.NEXT_PUBLIC_API_URL + "/users", { name });
     router.push("./list");
   };
 

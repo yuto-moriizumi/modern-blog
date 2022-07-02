@@ -28,12 +28,7 @@ usersRouter.post('/users', async (req, res) => {
     if (!dataSource.isInitialized) await dataSource.initialize();
     res
       .status(200)
-      .send(
-        await dataSource.manager.save(
-          User,
-          userMap(req.body, new User(parseInt(req.body.id)))
-        )
-      );
+      .send(await dataSource.manager.save(User, userMap(req.body, new User())));
   } catch (error) {
     console.error(error);
     res.status(400).send({ code: 404, message: 'Bad request' });

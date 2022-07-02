@@ -1,63 +1,48 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import axios from "axios";
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { Button } from "react-bootstrap";
+import { Article } from "../types";
 
-import Counter from '../features/counter/Counter'
-import styles from '../styles/Home.module.css'
+type Props = {
+  articles: Article[];
+};
 
-const IndexPage: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // APIやDBからのデータ取得処理などを記載
+
+  const articles: Article[] = (
+    await axios.get(process.env.API_URL_SSR + "/articles")
+  ).data;
+
+  const props: Props = { articles };
+
+  return {
+    props,
+  };
+};
+
+const ListPage: NextPage<Props> = (props: Props) => {
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Redux Toolkit</title>
+        <title>Articles</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header className={styles.header}>
-        <img src="/logo.svg" className={styles.logo} alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className={styles.link}
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className={styles.link}
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className={styles.link}
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className={styles.link}
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  )
-}
+      <h1>記事一覧</h1>
+      <Link href="/articles/create">
+        <Button variant="primary">新規作成</Button>
+      </Link>
+      <ul>
+        {props.articles.map((a) => (
+          <li key={a.id}>
+            <Link href={"/articles/" + a.id}>{a.title}</Link>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
-export default IndexPage
+export default ListPage;

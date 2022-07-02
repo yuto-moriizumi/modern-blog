@@ -5,7 +5,7 @@ import Article from './Article';
 @Entity()
 export default class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   name?: string;
@@ -13,7 +13,7 @@ export default class User {
   @OneToMany(() => Article, (article) => article.author)
   articles?: Article[];
 
-  constructor(id: number) {
+  constructor(id?: number) {
     this.id = id;
   }
 }

@@ -3,7 +3,7 @@ import User from './User';
 @Entity()
 export default class Article {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   title?: string;
@@ -11,10 +11,12 @@ export default class Article {
   @Column()
   content?: string;
 
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User, (user) => user.articles, {
+    eager: true,
+  })
   author?: User;
 
-  constructor(id: number) {
+  constructor(id?: number) {
     this.id = id;
   }
 }
