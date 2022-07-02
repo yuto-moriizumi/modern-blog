@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modern-blog-db
+spec:
+  selector:
+    matchLabels:
+      app: modern-blog-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: modern-blog-db
+    spec:
+      containers:
+        - name: modern-blog-db
+          image: volgakurvar/modernblog-db:1.1
+          template:
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: docker
+            - name: TZ
+              value: "Asia/Tokyo"
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "1"
+            requests:
+              memory: 256Mi
+              cpu: "0.2"

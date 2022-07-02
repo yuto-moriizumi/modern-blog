@@ -13,7 +13,7 @@ const ListPage: NextPage = () => {
   ) => {
     e.preventDefault();
     await axios.post(process.env.NEXT_PUBLIC_API_URL + "/users", { name });
-    router.push("./list");
+    router.push("/");
   };
 
   return (

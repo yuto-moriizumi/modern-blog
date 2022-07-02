@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modern-blog-api-deployment
+spec:
+  selector:
+    matchLabels:
+      app: modern-blog-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: modern-blog-api
+    spec:
+      containers:
+        - name: modern-blog-api
+          image: volgakurvar/modernblog-api:1.0
+          template:
+          ports:
+            - containerPort: 4000
+          env:
+            - name: CLIENT_ORIGIN_URL
+              value: http://localhost:30300
+            - name: DB_HOST
+              value: modern-blog-db
+            - name: DB_USERNAME
+              value: root
+            - name: DB_PASSWORD
+              value: docker

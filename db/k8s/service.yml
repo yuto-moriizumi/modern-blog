@@ -1,0 +1,13 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: modern-blog-db
+spec:
+  type: NodePort
+  ports:
+   - port: 3306
+     targetPort: 3306
+     protocol: TCP
+    #  nodePort: 33306
+  selector:
+    app: modern-blog-db
