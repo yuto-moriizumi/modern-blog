@@ -9,7 +9,9 @@ type Props = {
   articles: Article[];
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
   // APIやDBからのデータ取得処理などを記載
 
   const articles: Article[] = (
