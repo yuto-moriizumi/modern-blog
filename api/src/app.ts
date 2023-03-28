@@ -19,15 +19,6 @@ dotenv.config();
 
 const app = Express();
 
-// apiルータへ
-app.use('/', usersRouter);
-app.use('/', articlesRouter);
-
-// Root Endpoint
-app.get('/', (req, res) => {
-  res.status(200).send('Welcome to Modern blog Express API Server!');
-});
-
 // DB設定
 export const dataSource = new DataSource({
   type: 'mysql',
@@ -52,10 +43,20 @@ const server = new ApolloServer({
 });
 
 // ミドルウェア設定
-app.use(cors({ origin: process.env.CLIENT_ORIGIN_URL })); //add multiple cors
+app.use(cors());
+// app.use(cors({ origin: process.env.CLIENT_ORIGIN_URL })); //add multiple cors
 app.use(Express.json()); //json用ミドルウェア
 app.use(Express.urlencoded({ extended: true })); //フォームデータ用ミドルウェア
 app.use(compression()); // gzip圧縮して返す
+
+// apiルータへ
+app.use('/', usersRouter);
+app.use('/', articlesRouter);
+
+// Root Endpoint
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to Modern blog Express API Server!');
+});
 
 (async () => {
   await server.start();

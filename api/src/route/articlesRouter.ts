@@ -1,4 +1,5 @@
 import express from 'express';
+import { FindOperator } from 'typeorm';
 import { dataSource } from '../app';
 import { ArticleDto } from '../dto/ArticleDto';
 import Article from '../model/Article';
@@ -6,9 +7,19 @@ import User from '../model/User';
 
 const articlesRouter = express.Router();
 
-articlesRouter.get('/articles', async (req, res) => {
+export const getArticles = async (userId?: number) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  res.status(200).send(await dataSource.manager.find(Article));
+  const { manager } = dataSource;
+  if (userId)
+    return manager
+      .getRepository(Article)
+      .createQueryBuilder('article')
+      .where('article.id = :id', { id: userId })
+      .getMany();
+  return dataSource.manager.find(Article);
+};
+articlesRouter.get('/articles', async (req, res) => {
+  res.status(200).send(await getArticles());
 });
 
 articlesRouter.get('/articles/:id', async (req, res) => {

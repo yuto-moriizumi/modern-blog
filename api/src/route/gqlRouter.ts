@@ -1,5 +1,5 @@
-import { ApolloServer } from '@apollo/server';
 import express from 'express';
+import { getArticles } from './articlesRouter';
 
 const gqlRouter = express.Router();
 
@@ -12,6 +12,20 @@ export const typeDefs = `#graphql
 
   type Query {
     books: [Book!]!
+    articles: [Article!]!
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    articles: [Article!]!
+  }
+
+  type Article {
+    id: ID!
+    title: String!
+    content: String!
+    author: User!
   }
 `;
 
@@ -31,6 +45,10 @@ const books = [
 export const resolvers = {
   Query: {
     books: () => books,
+    articles: getArticles,
+  },
+  User: {
+    articles: (parent: { id: number }) => getArticles(parent.id),
   },
 };
 

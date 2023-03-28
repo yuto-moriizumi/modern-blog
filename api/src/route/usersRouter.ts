@@ -6,9 +6,12 @@ import User from '../model/User';
 
 const usersRouter = express.Router();
 
-usersRouter.get('/users', async (req, res) => {
+export const getUsers = async () => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  res.status(200).send(await dataSource.manager.find(User));
+  return dataSource.manager.find(User);
+};
+usersRouter.get('/users', async (req, res) => {
+  res.status(200).send(await getUsers());
 });
 
 usersRouter.get('/users/:id', async (req, res) => {
