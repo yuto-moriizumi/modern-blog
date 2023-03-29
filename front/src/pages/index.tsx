@@ -1,9 +1,11 @@
+import { gql } from "@apollo/client";
 import axios from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Button } from "react-bootstrap";
 import { Article } from "../types";
+import { client } from "./_app";
 
 type Props = {
   articles: Article[];
@@ -17,6 +19,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const articles: Article[] = (
     await axios.get(process.env.API_URL_SSR + "/articles")
   ).data;
+
+  client
+    .query({
+      query: gql`
+        query GetArticles {
+          articles {
+            id
+            title
+            content
+            author {
+              name
+            }
+          }
+        }
+      `,
+    })
+    .then((result) => console.log(result));
 
   const props: Props = { articles };
 
