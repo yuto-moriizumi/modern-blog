@@ -6,13 +6,14 @@ import usersRouter from './route/usersRouter';
 import articlesRouter from './route/articlesRouter';
 import cors from 'cors';
 import 'reflect-metadata';
-import User from './model/User';
-import Article from './model/Article';
-import { resolvers, typeDefs } from './route/gqlRouter';
+import UserModel from './model/User';
+import ArticleModel from './model/Article';
+import { resolvers, schema } from './route/gqlRouter';
 import { expressMiddleware } from '@apollo/server/express4';
 import http from 'http';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServer } from '@apollo/server';
+import { addResolversToSchema } from '@graphql-tools/schema';
 
 // envファイルの読み込み
 dotenv.config();
@@ -27,7 +28,7 @@ export const dataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: 'modern_blog',
-  entities: [User, Article],
+  entities: [UserModel, ArticleModel],
   synchronize: true,
   logging: false,
 });
@@ -36,8 +37,9 @@ dataSource.initialize().catch((error) => console.log(error));
 // サーバーのセットアップ
 const httpServer = http.createServer(app);
 
+// const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: schema,
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });

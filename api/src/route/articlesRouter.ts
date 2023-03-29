@@ -2,8 +2,8 @@ import express from 'express';
 import { FindOperator } from 'typeorm';
 import { dataSource } from '../app';
 import { ArticleDto } from '../dto/ArticleDto';
-import Article from '../model/Article';
-import User from '../model/User';
+import ArticleModel from '../model/Article';
+import UserModel from '../model/User';
 
 const articlesRouter = express.Router();
 
@@ -12,11 +12,11 @@ export const getArticles = async (userId?: number) => {
   const { manager } = dataSource;
   if (userId)
     return manager
-      .getRepository(Article)
+      .getRepository(ArticleModel)
       .createQueryBuilder('article')
       .where('article.id = :id', { id: userId })
       .getMany();
-  return dataSource.manager.find(Article);
+  return dataSource.manager.find(ArticleModel);
 };
 articlesRouter.get('/articles', async (req, res) => {
   res.status(200).send(await getArticles());
@@ -24,7 +24,7 @@ articlesRouter.get('/articles', async (req, res) => {
 
 articlesRouter.get('/articles/:id', async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  const article = await dataSource.manager.findOneBy(Article, {
+  const article = await dataSource.manager.findOneBy(ArticleModel, {
     id: parseInt(req.params.id),
   });
   if (article == null) {
@@ -41,8 +41,8 @@ articlesRouter.post('/articles', async (req, res) => {
       .status(200)
       .send(
         await dataSource.manager.save(
-          Article,
-          articleMap(req.body, new Article())
+          ArticleModel,
+          articleMap(req.body, new ArticleModel())
         )
       );
   } catch (error) {
@@ -57,17 +57,17 @@ articlesRouter.patch('/articles/:id', async (req, res) => {
     .status(200)
     .send(
       await dataSource.manager.save(
-        Article,
-        articleMap(req.body, new Article(parseInt(req.params.id)))
+        ArticleModel,
+        articleMap(req.body, new ArticleModel(parseInt(req.params.id)))
       )
     );
 });
 
-function articleMap(req: ArticleDto, article: Article) {
+function articleMap(req: ArticleDto, article: ArticleModel) {
   //idはマッピング対象外
-  article.title = req.title;
-  article.content = req.content;
-  article.author = new User(req.authorId);
+  if (req.title) article.title = req.title;
+  if (req.content) article.content = req.content;
+  article.author = new UserModel(req.authorId);
   return article;
 }
 

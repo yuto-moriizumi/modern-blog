@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --poll ./src/app",
     "start": "ts-node ./src/app",
-    "build": "tsc"
+    "build": "tsc",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/server": "^4.5.0",
@@ -21,6 +22,11 @@
     "typeorm": "^0.3.6"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^3.2.2",
+    "@graphql-codegen/typescript": "^3.0.2",
+    "@graphql-codegen/typescript-resolvers": "^3.1.1",
+    "@graphql-tools/graphql-file-loader": "^7.5.16",
+    "@graphql-tools/schema": "^9.0.17",
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",

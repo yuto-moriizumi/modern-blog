@@ -16,28 +16,26 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   // APIやDBからのデータ取得処理などを記載
 
-  const articles: Article[] = (
-    await axios.get(process.env.API_URL_SSR + "/articles")
-  ).data;
+  // const articles: Article[] = (
+  //   await axios.get(process.env.API_URL_SSR + "/articles")
+  // ).data;
 
-  client
-    .query({
-      query: gql`
-        query GetArticles {
-          articles {
-            id
-            title
-            content
-            author {
-              name
-            }
+  const { data } = await client.query<{ articles: Article[] }>({
+    query: gql`
+      query GetArticles {
+        articles {
+          id
+          title
+          content
+          author {
+            name
           }
         }
-      `,
-    })
-    .then((result) => console.log(result));
+      }
+    `,
+  });
 
-  const props: Props = { articles };
+  const props: Props = { articles: data.articles };
 
   return {
     props,

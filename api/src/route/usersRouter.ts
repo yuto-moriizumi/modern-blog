@@ -1,24 +1,28 @@
 import express from 'express';
 import { dataSource } from '../app';
 import { UserDto } from '../dto/UserDto';
-import Article from '../model/Article';
-import User from '../model/User';
+import ArticleModel from '../model/Article';
+import UserModel from '../model/User';
 
 const usersRouter = express.Router();
 
 export const getUsers = async () => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  return dataSource.manager.find(User);
+  return dataSource.manager.find(UserModel);
 };
 usersRouter.get('/users', async (req, res) => {
   res.status(200).send(await getUsers());
 });
 
-usersRouter.get('/users/:id', async (req, res) => {
+export const getUser = async (id: string) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  const user = await dataSource.manager.findOneBy(User, {
-    id: parseInt(req.params.id),
+  console.log({ id });
+  return dataSource.manager.findOneBy(UserModel, {
+    id: parseInt(id),
   });
+};
+usersRouter.get('/users/:id', async (req, res) => {
+  const user = await getUser(req.params.id);
   if (user == null) {
     res.status(404).send({ code: 404, message: 'User not found' });
     return;
@@ -31,7 +35,12 @@ usersRouter.post('/users', async (req, res) => {
     if (!dataSource.isInitialized) await dataSource.initialize();
     res
       .status(200)
-      .send(await dataSource.manager.save(User, userMap(req.body, new User())));
+      .send(
+        await dataSource.manager.save(
+          UserModel,
+          userMap(req.body, new UserModel())
+        )
+      );
   } catch (error) {
     console.error(error);
     res.status(400).send({ code: 404, message: 'Bad request' });
@@ -44,13 +53,13 @@ usersRouter.patch('/users/:id', async (req, res) => {
     .status(200)
     .send(
       await dataSource.manager.save(
-        User,
-        userMap(req.body, new User(parseInt(req.params.id)))
+        UserModel,
+        userMap(req.body, new UserModel(parseInt(req.params.id)))
       )
     );
 });
 
-function userMap(req: UserDto, user: User) {
+function userMap(req: UserDto, user: UserModel) {
   //idはマッピング対象外
   user.name = req.name;
   return user;

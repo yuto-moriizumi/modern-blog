@@ -1,19 +1,19 @@
 import dayjs from 'dayjs';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import Article from './Article';
+import ArticleModel from './Article';
 
 @Entity()
-export default class User {
+export default class UserModel {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id!: number;
 
   @Column()
-  name?: string;
+  name!: string;
 
-  @OneToMany(() => Article, (article) => article.author)
-  articles?: Article[];
+  @OneToMany(() => ArticleModel, (article) => article.author)
+  articles!: ArticleModel[];
 
   constructor(id?: number) {
-    this.id = id;
+    if (id) this.id = id;
   }
 }
