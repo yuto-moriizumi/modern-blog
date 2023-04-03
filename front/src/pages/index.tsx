@@ -1,26 +1,18 @@
 import { gql } from "@apollo/client";
-import axios from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Button } from "react-bootstrap";
 import { Article } from "../types";
 import { client } from "./_app";
+import { Query } from "../../../common/graphql";
 
 type Props = {
   articles: Article[];
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
-  // APIやDBからのデータ取得処理などを記載
-
-  // const articles: Article[] = (
-  //   await axios.get(process.env.API_URL_SSR + "/articles")
-  // ).data;
-
-  const { data } = await client.query<{ articles: Article[] }>({
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const { data } = await client.query<Query>({
     query: gql`
       query GetArticles {
         articles {

@@ -14,15 +14,15 @@ usersRouter.get('/users', async (req, res) => {
   res.status(200).send(await getUsers());
 });
 
-export const getUser = async (id: string) => {
+export const getUser = async (id: number) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   console.log({ id });
   return dataSource.manager.findOneBy(UserModel, {
-    id: parseInt(id),
+    id,
   });
 };
 usersRouter.get('/users/:id', async (req, res) => {
-  const user = await getUser(req.params.id);
+  const user = await getUser(parseInt(req.params.id));
   if (user == null) {
     res.status(404).send({ code: 404, message: 'User not found' });
     return;
@@ -61,7 +61,7 @@ usersRouter.patch('/users/:id', async (req, res) => {
 
 function userMap(req: UserDto, user: UserModel) {
   //idはマッピング対象外
-  user.name = req.name;
+  if (req.name) user.name = req.name;
   return user;
 }
 

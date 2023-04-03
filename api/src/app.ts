@@ -1,19 +1,18 @@
-import Express from 'express';
-import compression from 'compression';
-import { DataSource } from 'typeorm';
-import dotenv from 'dotenv';
-import usersRouter from './route/usersRouter';
-import articlesRouter from './route/articlesRouter';
-import cors from 'cors';
-import 'reflect-metadata';
-import UserModel from './model/User';
-import ArticleModel from './model/Article';
-import { resolvers, schema } from './route/gqlRouter';
-import { expressMiddleware } from '@apollo/server/express4';
-import http from 'http';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { ApolloServer } from '@apollo/server';
-import { addResolversToSchema } from '@graphql-tools/schema';
+import Express from "express";
+import compression from "compression";
+import { DataSource } from "typeorm";
+import dotenv from "dotenv";
+import usersRouter from "./route/usersRouter";
+import articlesRouter from "./route/articlesRouter";
+import cors from "cors";
+import "reflect-metadata";
+import UserModel from "./model/User";
+import ArticleModel from "./model/Article";
+import { resolvers, schema } from "./route/gqlRouter";
+import { expressMiddleware } from "@apollo/server/express4";
+import http from "http";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { ApolloServer } from "@apollo/server";
 
 // envファイルの読み込み
 dotenv.config();
@@ -22,12 +21,12 @@ const app = Express();
 
 // DB設定
 export const dataSource = new DataSource({
-  type: 'mysql',
+  type: "mysql",
   host: process.env.DB_HOST,
   port: 3306,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: 'modern_blog',
+  database: "modern_blog",
   entities: [UserModel, ArticleModel],
   synchronize: true,
   logging: false,
@@ -52,17 +51,17 @@ app.use(Express.urlencoded({ extended: true })); //フォームデータ用ミ�
 app.use(compression()); // gzip圧縮して返す
 
 // apiルータへ
-app.use('/', usersRouter);
-app.use('/', articlesRouter);
+app.use("/", usersRouter);
+app.use("/", articlesRouter);
 
 // Root Endpoint
-app.get('/', (req, res) => {
-  res.status(200).send('Welcome to Modern blog Express API Server!');
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to Modern blog Express API Server!");
 });
 
 (async () => {
   await server.start();
-  app.use('/gql', expressMiddleware(server));
+  app.use("/gql", expressMiddleware(server));
   httpServer.listen({ port: 4000 });
 })();
 

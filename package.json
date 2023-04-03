@@ -1,0 +1,19 @@
+{
+  "name": "modern-blog",
+  "version": "1.0.0",
+  "repository": "https://github.com/yuto-moriizumi/modern-blog",
+  "author": "yuto.moriizumi <kurvan1112@gmail.com>",
+  "license": "MIT", 
+   "scripts": {
+    "codegen": "graphql-codegen --config ./common/codegen.yml"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^3.2.2",
+    "@graphql-codegen/typescript": "^3.0.2",
+    "@graphql-codegen/typescript-resolvers": "^3.1.1",
+    "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "graphql": "^16.6.0"
+  }
+}

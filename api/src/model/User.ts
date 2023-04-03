@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import ArticleModel from './Article';
 

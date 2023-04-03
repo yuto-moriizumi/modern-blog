@@ -1,5 +1,4 @@
 import express from 'express';
-import { FindOperator } from 'typeorm';
 import { dataSource } from '../app';
 import { ArticleDto } from '../dto/ArticleDto';
 import ArticleModel from '../model/Article';

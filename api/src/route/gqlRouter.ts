@@ -1,53 +1,28 @@
-import express from 'express';
-import { getArticles } from './articlesRouter';
-import { getUser, getUsers } from './usersRouter';
+import express from "express";
+import { getArticles } from "./articlesRouter";
+import { getUser, getUsers } from "./usersRouter";
+import { loadSchemaSync } from "@graphql-tools/load";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { join } from "path";
+import { Resolvers } from "../../../common/graphql";
 
 const gqlRouter = express.Router();
-
-// GraphQLスキーマの定義
-// export const typeDefs = `#graphql
-//   type Book {
-//     title: String
-//     author: String
-//   }
-
-//   type Query {
-//     books: [Book!]!
-//     articles: [Article!]!
-//     users: [User!]!
-//     user(id:ID!): User!
-//   }
-
-//   type User {
-//     id: ID!
-//     name: String!
-//     articles: [Article!]!
-//   }
-
-//   type Article {
-//     id: ID!
-//     title: String!
-//     content: String!
-//     author: User!
-//   }
-// `;
-import { loadSchemaSync } from '@graphql-tools/load';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { join } from 'path';
-import { Resolvers } from '../graphql';
-export const schema = loadSchemaSync(join(__dirname, '../../schema.graphql'), {
-  loaders: [new GraphQLFileLoader()],
-});
+export const schema = loadSchemaSync(
+  join(__dirname, "../../../common/schema.graphql"),
+  {
+    loaders: [new GraphQLFileLoader()],
+  }
+);
 
 // サンプルデータの定義
 const books = [
   {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
+    title: "The Awakening",
+    author: "Kate Chopin",
   },
   {
-    title: 'City of Glass',
-    author: 'Paul Auster',
+    title: "City of Glass",
+    author: "Paul Auster",
   },
 ];
 
@@ -57,10 +32,7 @@ export const resolvers: Resolvers = {
     books: () => books,
     articles: () => getArticles(),
     users: getUsers,
-    user: (parent: any, args: any, context: any, info: any) => {
-      console.log(args);
-      return getUser(args);
-    },
+    user: (_parent, args) => getUser(args.id),
   },
   User: {
     articles: (parent: { id: number }) => getArticles(parent.id),

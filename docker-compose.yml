@@ -3,10 +3,11 @@ services:
   front:
     image: node:16
     volumes:
-      - ./front:/usr/src
-      - front_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
+      - ./:/usr/src
+      - root_modules:/usr/src/node_modules
+      - front_modules:/usr/src/front/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
-    command: sh -c "yarn && yarn dev"
+    command: sh -c "yarn && cd front && yarn && yarn dev"
     tty: true
     ports:
       - "3000:3000"
@@ -17,12 +18,13 @@ services:
   api:
     image: node:16
     volumes:
-      - ./api/:/usr/src/
-      - api_modules:/usr/src/node_modules #node_modulesはコンテナ内部で用意します
+      - ./:/usr/src
+      - root_modules:/usr/src/node_modules
+      - api_modules:/usr/src/api/node_modules #node_modulesはコンテナ内部で用意します
     working_dir: "/usr/src"
     ports:
       - "4000:4000"
-    command: sh -c "yarn && yarn dev"
+    command: sh -c "yarn && cd api && yarn && yarn dev"
     depends_on:
       - db
     environment:
@@ -53,3 +55,4 @@ services:
 volumes:
   front_modules:
   api_modules:
+  root_modules:
