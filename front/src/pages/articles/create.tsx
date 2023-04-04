@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -6,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/counter/userSlice";
+import { csrClient } from "../_app";
+import { gql } from "@apollo/client";
 
 const CreatePage: NextPage = () => {
   const [title, setTitle] = useState("");
@@ -19,14 +20,31 @@ const CreatePage: NextPage = () => {
     }
   }, []);
 
-  const handleClick = async (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    await axios.post(process.env.NEXT_PUBLIC_API_URL + "/articles", {
-      title,
-      content,
-      authorId: userStore.user.id,
+    if (!userStore.user) {
+      router.push("/");
+      return;
+    }
+    await csrClient.mutate({
+      mutation: gql`
+        mutation AddArticle(
+          $title: String!
+          $content: String!
+          $authorId: Int!
+        ) {
+          addArticle(title: $title, content: $content, authorId: $authorId) {
+            id
+            title
+            content
+          }
+        }
+      `,
+      variables: {
+        title,
+        content,
+        authorId: userStore.user.id,
+      },
     });
     router.push("/");
   };

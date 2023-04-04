@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import type { AppState } from "../../app/store";
-import { client } from "../../pages/_app";
+import { csrClient } from "../../pages/_app";
 import { User } from "../../types";
+import { gql } from "@apollo/client";
+import { Query } from "../../../../common/graphql";
 
 export interface UserState {
   user: User | undefined;
@@ -15,22 +16,17 @@ const initialState: UserState = {
 };
 
 export const loginAsync = createAsyncThunk("user/login", async (id: number) => {
-  const { data } = await client.query<{ articles: Article[] }>({
+  const { data } = await csrClient.query<Query>({
     query: gql`
-      query GetArticles {
-        articles {
+      query GetUser {
+        user(id: ${id}) {
           id
-          title
-          content
-          author {
-            name
-          }
+          name
         }
       }
     `,
   });
-  return (await axios.get(process.env.NEXT_PUBLIC_API_URL + "/users/" + id))
-    .data as User;
+  return data.user ?? undefined;
 });
 
 export const userSlice = createSlice({

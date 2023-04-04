@@ -10,9 +10,12 @@ import {
   gql,
 } from "@apollo/client";
 
-export const client = new ApolloClient({
+export const csrClient = new ApolloClient({
+  uri: process.env.NEXT_PUBLIC_API_URL + "/gql",
+  cache: new InMemoryCache(),
+});
+export const ssrClient = new ApolloClient({
   uri: process.env.API_URL_SSR + "/gql",
-
   cache: new InMemoryCache(),
 });
 

@@ -1,6 +1,6 @@
 import express from "express";
-import { getArticles } from "./articlesRouter";
-import { getUser, getUsers } from "./usersRouter";
+import { getArticle, getArticles, saveArticle } from "./articlesRouter";
+import { getUser, getUsers, saveUser } from "./usersRouter";
 import { loadSchemaSync } from "@graphql-tools/load";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { join } from "path";
@@ -31,11 +31,16 @@ export const resolvers: Resolvers = {
   Query: {
     books: () => books,
     articles: () => getArticles(),
+    article: (_, args) => getArticle(args.id),
     users: getUsers,
-    user: (_parent, args) => getUser(args.id),
+    user: (_, args) => getUser(args.id),
   },
   User: {
-    articles: (parent: { id: number }) => getArticles(parent.id),
+    articles: (parent) => getArticles(parent.id),
+  },
+  Mutation: {
+    addUser: (_, args) => saveUser(args.name),
+    addArticle: (_, args) => saveArticle(args),
   },
 };
 

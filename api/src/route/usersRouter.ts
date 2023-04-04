@@ -1,8 +1,7 @@
-import express from 'express';
-import { dataSource } from '../app';
-import { UserDto } from '../dto/UserDto';
-import ArticleModel from '../model/Article';
-import UserModel from '../model/User';
+import express from "express";
+import { dataSource } from "../app";
+import { UserDto } from "../dto/UserDto";
+import UserModel from "../model/User";
 
 const usersRouter = express.Router();
 
@@ -10,7 +9,7 @@ export const getUsers = async () => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   return dataSource.manager.find(UserModel);
 };
-usersRouter.get('/users', async (req, res) => {
+usersRouter.get("/users", async (req, res) => {
   res.status(200).send(await getUsers());
 });
 
@@ -21,33 +20,32 @@ export const getUser = async (id: number) => {
     id,
   });
 };
-usersRouter.get('/users/:id', async (req, res) => {
+usersRouter.get("/users/:id", async (req, res) => {
   const user = await getUser(parseInt(req.params.id));
   if (user == null) {
-    res.status(404).send({ code: 404, message: 'User not found' });
+    res.status(404).send({ code: 404, message: "User not found" });
     return;
   }
   res.status(200).send(user);
 });
 
-usersRouter.post('/users', async (req, res) => {
+export const saveUser = async (name: string) => {
+  if (!dataSource.isInitialized) await dataSource.initialize();
+  const user = new UserModel();
+  user.name = name;
+  return dataSource.manager.save(UserModel, user);
+};
+usersRouter.post("/users", async (req, res) => {
   try {
     if (!dataSource.isInitialized) await dataSource.initialize();
-    res
-      .status(200)
-      .send(
-        await dataSource.manager.save(
-          UserModel,
-          userMap(req.body, new UserModel())
-        )
-      );
+    res.status(200).send(saveUser(req.body.name));
   } catch (error) {
     console.error(error);
-    res.status(400).send({ code: 404, message: 'Bad request' });
+    res.status(400).send({ code: 404, message: "Bad request" });
   }
 });
 
-usersRouter.patch('/users/:id', async (req, res) => {
+usersRouter.patch("/users/:id", async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   res
     .status(200)

@@ -1,8 +1,8 @@
-import express from 'express';
-import { dataSource } from '../app';
-import { ArticleDto } from '../dto/ArticleDto';
-import ArticleModel from '../model/Article';
-import UserModel from '../model/User';
+import express from "express";
+import { dataSource } from "../app";
+import { ArticleDto } from "../dto/ArticleDto";
+import ArticleModel from "../model/Article";
+import UserModel from "../model/User";
 
 const articlesRouter = express.Router();
 
@@ -12,45 +12,48 @@ export const getArticles = async (userId?: number) => {
   if (userId)
     return manager
       .getRepository(ArticleModel)
-      .createQueryBuilder('article')
-      .where('article.id = :id', { id: userId })
+      .createQueryBuilder("article")
+      .where("article.id = :id", { id: userId })
       .getMany();
   return dataSource.manager.find(ArticleModel);
 };
-articlesRouter.get('/articles', async (req, res) => {
+articlesRouter.get("/articles", async (req, res) => {
   res.status(200).send(await getArticles());
 });
 
-articlesRouter.get('/articles/:id', async (req, res) => {
+export const getArticle = async (id: number) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
-  const article = await dataSource.manager.findOneBy(ArticleModel, {
-    id: parseInt(req.params.id),
+  return dataSource.manager.findOneBy(ArticleModel, {
+    id,
   });
+};
+articlesRouter.get("/articles/:id", async (req, res) => {
+  const article = getArticle(parseInt(req.params.id));
   if (article == null) {
-    res.status(404).send({ code: 404, message: 'Article not found' });
+    res.status(404).send({ code: 404, message: "Article not found" });
     return;
   }
   res.status(200).send(article);
 });
 
-articlesRouter.post('/articles', async (req, res) => {
+export const saveArticle = async (article: ArticleDto) => {
+  if (!dataSource.isInitialized) await dataSource.initialize();
+  return dataSource.manager.save(
+    ArticleModel,
+    articleMap(article, new ArticleModel())
+  );
+};
+articlesRouter.post("/articles", async (req, res) => {
   try {
-    if (!dataSource.isInitialized) await dataSource.initialize();
-    res
-      .status(200)
-      .send(
-        await dataSource.manager.save(
-          ArticleModel,
-          articleMap(req.body, new ArticleModel())
-        )
-      );
+    await saveArticle(req.body);
+    res.status(201).send();
   } catch (error) {
     console.error(error);
-    res.status(400).send({ code: 404, message: 'Bad request' });
+    res.status(400).send({ code: 404, message: "Bad request" });
   }
 });
 
-articlesRouter.patch('/articles/:id', async (req, res) => {
+articlesRouter.patch("/articles/:id", async (req, res) => {
   if (!dataSource.isInitialized) await dataSource.initialize();
   res
     .status(200)

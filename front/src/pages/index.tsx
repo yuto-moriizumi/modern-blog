@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Button } from "react-bootstrap";
 import { Article } from "../types";
-import { client } from "./_app";
+import { ssrClient } from "./_app";
 import { Query } from "../../../common/graphql";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const { data } = await client.query<Query>({
+  const { data } = await ssrClient.query<Query>({
     query: gql`
       query GetArticles {
         articles {
@@ -25,6 +25,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
         }
       }
     `,
+    fetchPolicy: "cache-first",
   });
 
   const props: Props = { articles: data.articles };

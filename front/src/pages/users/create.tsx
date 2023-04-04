@@ -1,8 +1,9 @@
-import axios from "axios";
+import { gql } from "@apollo/client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { csrClient } from "../_app";
 
 const ListPage: NextPage = () => {
   const [name, setName] = useState("");
@@ -12,7 +13,19 @@ const ListPage: NextPage = () => {
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     e.preventDefault();
-    await axios.post(process.env.NEXT_PUBLIC_API_URL + "/users", { name });
+    await csrClient.mutate({
+      mutation: gql`
+        mutation AddUser($name: String!) {
+          addUser(name: $name) {
+            id
+            name
+          }
+        }
+      `,
+      variables: {
+        name,
+      },
+    });
     router.push("/");
   };
 

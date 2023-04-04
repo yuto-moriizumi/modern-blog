@@ -1,23 +1,55 @@
-import axios from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Article } from "../../types";
+import { ssrClient } from "../_app";
+import { Query } from "../../../../common/graphql";
+import { gql } from "@apollo/client";
 
 type Props = {
-  article: Article;
+  article?: Article;
+};
+type ParsedUrlQuery = {
+  id: string;
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const article: Article = (
-    await axios.get(process.env.API_URL_SSR + "/articles/" + params.id)
-  ).data;
-  const props: Props = { article };
-  return { props };
+export const getServerSideProps: GetServerSideProps<
+  Props,
+  ParsedUrlQuery
+> = async ({ params }) => {
+  if (!params) return { props: {} };
+  const article =
+    (
+      await ssrClient.query<Query>({
+        query: gql`
+          query GetArticle($id: Int!) {
+            article(id: $id) {
+              id
+              title
+              content
+              author {
+                name
+              }
+            }
+          }
+        `,
+        variables: {
+          id: parseInt(params.id),
+        },
+      })
+    ).data.article ?? undefined;
+  return { props: { article } };
 };
 
 const ViewPage: NextPage<Props> = (props) => {
   const { article } = props;
+  if (!article)
+    return (
+      <>
+        <h1>Article Not Found</h1>
+        <Link href="/">一覧へ</Link>
+      </>
+    );
   return (
     <>
       <Head>

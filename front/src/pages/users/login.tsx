@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -15,9 +14,7 @@ const LoginPage: NextPage = () => {
   const user = useAppSelector(selectUser);
   const [error, setError] = useState("");
 
-  const handleClick = async (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     await dispatch(loginAsync(id));
     if (user.user === undefined || user.status === "failed") {
