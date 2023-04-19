@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import { Article } from "../types";
 import { ssrClient } from "./_app";
 import { Query } from "../../../common/graphql";
+import { useBearStore } from "../app/store";
 
 type Props = {
   articles: Article[];
@@ -36,6 +37,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 };
 
 const ListPage: NextPage<Props> = (props: Props) => {
+  const { bears, increasePopulation, increasePopulationAsync } = useBearStore();
   return (
     <>
       <Head>
@@ -53,6 +55,9 @@ const ListPage: NextPage<Props> = (props: Props) => {
           </li>
         ))}
       </ul>
+      <p>熊の数{bears}</p>
+      <button onClick={() => increasePopulation()}>増やす</button>
+      <button onClick={() => increasePopulationAsync()}>非同期に増やす</button>
     </>
   );
 };
