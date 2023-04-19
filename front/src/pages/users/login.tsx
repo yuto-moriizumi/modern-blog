@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { loginAsync, selectUser } from "../../features/counter/userSlice";
+import { loginAsync, selectUser } from "../../app/userSlice";
 
 const LoginPage: NextPage = () => {
   const [id, setId] = useState(1);

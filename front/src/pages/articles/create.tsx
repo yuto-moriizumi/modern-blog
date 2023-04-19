@@ -3,10 +3,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useAppSelector } from "../../app/hooks";
-import { selectUser } from "../../features/counter/userSlice";
+import { selectUser } from "../../app/userSlice";
 import { csrClient } from "../_app";
 import { gql } from "@apollo/client";
+import { useAppSelector } from "../../app/store";
 
 const CreatePage: NextPage = () => {
   const [title, setTitle] = useState("");

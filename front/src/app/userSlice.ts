@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AppState } from "../../app/store";
-import { csrClient } from "../../pages/_app";
-import { User } from "../../types";
+import type { AppState } from "./store";
+import { csrClient } from "../pages/_app";
+import { User } from "../types";
 import { gql } from "@apollo/client";
-import { Query } from "../../../../common/graphql";
+import { Query } from "../../../common/graphql";
 
 export interface UserState {
   user: User | undefined;
